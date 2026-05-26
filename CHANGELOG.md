@@ -1,3 +1,11 @@
+# Unreleased
+
+## Features
+
+- Added `NewtonSDFCollisionAPI`, which extends `NewtonCollisionAPI` with attributes that configure SDF-based collision and optional hydroelastic contact.
+  - Hydroelastic contact is opt-in via `newton:hydroelasticEnabled` (default `false`) on the same API; no separate hydroelastic API is required.
+  - Applying `NewtonSDFCollisionAPI` implicitly applies `NewtonCollisionAPI` and `PhysicsCollisionAPI` as well.
+
 # 0.2.0
 
 ## Features

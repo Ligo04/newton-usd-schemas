@@ -421,6 +421,122 @@ class NewtonMeshCollisionAPI "NewtonMeshCollisionAPI" (
     )
 }
 
+class NewtonSDFCollisionAPI "NewtonSDFCollisionAPI" (
+    apiSchemas = ["NewtonCollisionAPI"]
+    doc = """Configures SDF-based collision (and optional hydroelastic contact).
+
+    Applying this schema enables signed distance field (SDF) generation for
+    the collision shape. The SDF should be built from the base `Gprim` surface, using the configured resolution and narrow band parameters.
+
+    Hydroelastic contact is opt-in via `newton:hydroelasticEnabled`, and uses
+    the same SDF representation.
+
+    By applying this schema, the prim also inherits the `NewtonCollisionAPI`
+    and `PhysicsCollisionAPI` schemas."""
+)
+{
+    uniform int newton:sdfMaxResolution = 64 (
+        doc = """Maximum dimension for the sparse SDF grid.
+
+        Must be divisible by 8. If `newton:sdfTargetVoxelSize` is also authored,
+        target voxel size takes precedence.
+
+        Range: [8, inf)
+        Units: dimensionless"""
+        limits = {
+            dictionary hard = {
+                int minimum = 8
+            }
+        }
+    )
+    uniform float newton:sdfTargetVoxelSize = -inf (
+        doc = """Target voxel size for the sparse SDF grid.
+
+        When authored with a positive value, takes precedence over
+        `newton:sdfMaxResolution`.
+
+        If `newton:sdfTargetVoxelSize` is set to `-inf`, `newton:sdfMaxResolution`
+        is used instead.
+
+        Range: (0, inf)
+        Units: distance"""
+        limits = {
+            dictionary hard = {
+                float minimum = 0
+            }
+        }
+    )
+    uniform float newton:sdfNarrowBandInner = -0.1 (
+        doc = """Inner (negative) narrow band distance for SDF computation.
+
+        Range: (-inf, 0]
+        Units: distance"""
+        limits = {
+            dictionary soft = {
+                float maximum = 0
+            }
+        }
+    )
+    uniform float newton:sdfNarrowBandOuter = 0.1 (
+        doc = """Outer (positive) narrow band distance for SDF computation.
+
+        Range: [0, inf)
+        Units: distance"""
+        limits = {
+            dictionary soft = {
+                float minimum = 0
+            }
+        }
+    )
+    uniform token newton:sdfTextureFormat = "uint16" (
+        allowedTokens = ["uint8", "uint16", "float32"]
+        doc = """Subgrid texture storage format for the SDF.
+
+        `"uint16"` (default) stores subgrid voxels as 16-bit normalized textures
+        (half the memory of `"float32"`). `"float32"` stores full-precision values.
+        `"uint8"` uses 8-bit textures for minimum memory."""
+    )
+    uniform float newton:sdfPadding = -inf (
+        doc = """SDF AABB padding.
+
+        Enlarges the SDF's bounding box beyond the mesh AABB by this distance,
+        extending the spatial domain in which distance queries are valid.
+
+        If `newton:sdfPadding` is set to `-inf`, Newton's builder default should be used instead.
+
+        Range: (0, inf)
+        Units: distance"""
+        limits = {
+            dictionary hard = {
+                float minimum = 0
+            }
+        }
+    )
+    bool newton:hydroelasticEnabled = false (
+        doc = """Toggles hydroelastic contacts for this shape.
+
+        When true, the shape participates in hydroelastic contact generation;
+        both shapes in a colliding pair must have this attribute true for
+        hydroelastic contacts to be generated."""
+    )
+    float newton:hydroelasticStiffness = 1e10 (
+        doc = """Hydroelastic contact stiffness coefficient.
+
+        Contact force is computed as: `force = k_eff * area * depth`, where
+        `k_eff` is the effective stiffness of the two shapes in series
+        (harmonic mean). Higher values produce stiffer contacts. Only
+        consulted when `newton:hydroelasticEnabled` is true.
+
+        Range: (0, inf)
+        Units: force / (distance * distance * distance)"""
+        limits = {
+            dictionary hard = {
+                float minimum = 0
+            }
+        }
+    )
+}
+
 class NewtonSiteAPI "NewtonSiteAPI" (
     doc = """NewtonSiteAPI applies on top of a Gprim, marking it as a non-colliding, massless
     reference frame used for sensing, attachment, or coordinate queries.
