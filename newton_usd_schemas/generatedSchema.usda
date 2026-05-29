@@ -663,7 +663,7 @@ class NewtonMaterialAPI "NewtonMaterialAPI" (
         Controls how rigid or compliant the material feels on contact. Higher values
         produce stiffer contacts at the cost of requiring smaller time steps.
 
-        If `newton:contactStiffness` is set to `-inf`, Newton's builder default should be used instead.
+        If `newton:contactStiffness` is set to `-inf`, the engine's default should be used instead.
 
         Range: [0, inf)
         Units: force/distance"""
@@ -680,7 +680,7 @@ class NewtonMaterialAPI "NewtonMaterialAPI" (
         Controls how much energy the material absorbs during contact. Higher values
         reduce bouncing.
 
-        If `newton:contactDamping` is set to `-inf`, Newton's builder default should be used instead.
+        If `newton:contactDamping` is set to `-inf`, the engine's default should be used instead.
 
         Range: [0, inf)
         Units: force * time / distance"""
@@ -697,7 +697,7 @@ class NewtonMaterialAPI "NewtonMaterialAPI" (
         At low sliding speeds, friction force equals `contactFrictionStiffness * velocity`
         (viscous regime); at high speeds it is clamped to the Coulomb limit `mu * normal_force`.
 
-        If `newton:contactFrictionStiffness` is set to `-inf`, Newton's builder default should be used instead.
+        If `newton:contactFrictionStiffness` is set to `-inf`, the engine's default should be used instead.
 
         Range: [0, inf)
         Units: force * time / distance"""
@@ -714,7 +714,7 @@ class NewtonMaterialAPI "NewtonMaterialAPI" (
         When two surfaces are within this distance, an attractive force pulls them together.
         A value of 0 or less disables adhesion.
 
-        If `newton:contactAdhesion` is set to `-inf`, Newton's builder default should be used instead.
+        If `newton:contactAdhesion` is set to `-inf`, the engine's default should be used instead.
 
         Range: [0, inf)
         Units: distance"""
