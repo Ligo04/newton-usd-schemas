@@ -221,6 +221,10 @@ class TestNewtonStablePDControlAPI(unittest.TestCase):
             self.assertEqual(hard.GetMinimum(), 0)
             self.assertIsNone(hard.GetMaximum())
 
+    def test_api_limitations(self):
+        xform = self.stage.DefinePrim("/NotActuator", "Xform")
+        self.assertFalse(xform.CanApplyAPI("NewtonStablePDControlAPI"))
+
 
 class TestNewtonPIDControlAPI(unittest.TestCase):
     def setUp(self):
