@@ -209,7 +209,7 @@ class TestNewtonStablePDControlAPI(unittest.TestCase):
         self.prim.ApplyAPI("NewtonStablePDControlAPI")
         attr = self.prim.GetAttribute("newton:numWorlds")
         self.assertFalse(attr.HasAuthoredValue())
-        self.assertEqual(attr.Get(), 0)
+        self.assertEqual(attr.Get(), 1)
 
         attr.Set(4)
         self.assertTrue(attr.HasAuthoredValue())

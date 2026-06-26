@@ -944,7 +944,7 @@ class NewtonStablePDControlAPI "NewtonStablePDControlAPI" (
         }
     )
 
-    int newton:numWorlds = 0 (
+    int newton:numWorlds = 1 (
         doc = """Optional number of parallel simulation worlds for batched
         evaluation.
 
