@@ -151,6 +151,77 @@ class TestNewtonPDControlAPI(unittest.TestCase):
             self.assertIsNone(hard.GetMaximum())
 
 
+class TestNewtonStablePDControlAPI(unittest.TestCase):
+    def setUp(self):
+        self.stage: Usd.Stage = Usd.Stage.CreateInMemory()
+        self.prim: Usd.Prim = self.stage.DefinePrim("/Actuator", "NewtonActuator")
+
+    def test_api_registered(self):
+        plug_type = Plug.Registry().FindTypeByName("NewtonPhysicsStablePDControlAPI")
+        self.assertEqual(plug_type.typeName, "NewtonPhysicsStablePDControlAPI")
+        schema_type = Usd.SchemaRegistry().GetSchemaTypeName("NewtonPhysicsStablePDControlAPI")
+        self.assertEqual(schema_type, "NewtonStablePDControlAPI")
+
+    def test_api_application(self):
+        self.assertFalse(self.prim.HasAPI("NewtonStablePDControlAPI"))
+        self.assertFalse(self.prim.HasAPI("NewtonActuatorControlBaseAPI"))
+        self.prim.ApplyAPI("NewtonStablePDControlAPI")
+        self.assertTrue(self.prim.HasAPI("NewtonStablePDControlAPI"))
+        self.assertTrue(self.prim.HasAPI("NewtonActuatorControlBaseAPI"))
+        self.assertFalse(self.prim.HasAPI("NewtonPDControlAPI"))
+        self.assertTrue(self.prim.HasAttribute("newton:kp"))
+        self.assertTrue(self.prim.HasAttribute("newton:kd"))
+        self.assertTrue(self.prim.HasAttribute("newton:numWorlds"))
+
+    def test_kp(self):
+        self.prim.ApplyAPI("NewtonStablePDControlAPI")
+        attr = self.prim.GetAttribute("newton:kp")
+        self.assertFalse(attr.HasAuthoredValue())
+        self.assertAlmostEqual(attr.Get(), 0.0)
+
+        attr.Set(50.0)
+        self.assertTrue(attr.HasAuthoredValue())
+        self.assertAlmostEqual(attr.Get(), 50.0)
+
+        if USD_HAS_LIMITS:
+            hard = attr.GetHardLimits()
+            self.assertTrue(hard.IsValid())
+            self.assertAlmostEqual(hard.GetMinimum(), 0.0)
+            self.assertIsNone(hard.GetMaximum())
+
+    def test_kd(self):
+        self.prim.ApplyAPI("NewtonStablePDControlAPI")
+        attr = self.prim.GetAttribute("newton:kd")
+        self.assertFalse(attr.HasAuthoredValue())
+        self.assertAlmostEqual(attr.Get(), 0.0)
+
+        attr.Set(5.0)
+        self.assertTrue(attr.HasAuthoredValue())
+        self.assertAlmostEqual(attr.Get(), 5.0)
+
+        if USD_HAS_LIMITS:
+            hard = attr.GetHardLimits()
+            self.assertTrue(hard.IsValid())
+            self.assertAlmostEqual(hard.GetMinimum(), 0.0)
+            self.assertIsNone(hard.GetMaximum())
+
+    def test_num_worlds(self):
+        self.prim.ApplyAPI("NewtonStablePDControlAPI")
+        attr = self.prim.GetAttribute("newton:numWorlds")
+        self.assertFalse(attr.HasAuthoredValue())
+        self.assertEqual(attr.Get(), 0)
+
+        attr.Set(4)
+        self.assertTrue(attr.HasAuthoredValue())
+        self.assertEqual(attr.Get(), 4)
+
+        if USD_HAS_LIMITS:
+            hard = attr.GetHardLimits()
+            self.assertTrue(hard.IsValid())
+            self.assertEqual(hard.GetMinimum(), 0)
+            self.assertIsNone(hard.GetMaximum())
+
+
 class TestNewtonPIDControlAPI(unittest.TestCase):
     def setUp(self):
         self.stage: Usd.Stage = Usd.Stage.CreateInMemory()

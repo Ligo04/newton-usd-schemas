@@ -1,3 +1,11 @@
+# Unreleased
+
+## Features
+
+- Added `NewtonStablePDControlAPI`, a stable PD (SPD) control law that computes effort from the next-step predicted state for improved stability at high gains.
+  - Provides `newton:kp`, `newton:kd`, and an optional `newton:numWorlds` for parallel-world batched evaluation.
+  - Like the other control laws, it must be chosen as the single control law on a `NewtonActuator` (alongside `NewtonPDControlAPI`, `NewtonPIDControlAPI`, and `NewtonNeuralControlAPI`).
+
 # 0.3.1
 
 ## Fixes

@@ -903,6 +903,62 @@ class NewtonPDControlAPI "NewtonPDControlAPI" (
     )
 }
 
+class NewtonStablePDControlAPI "NewtonStablePDControlAPI" (
+    apiSchemas = ["NewtonActuatorControlBaseAPI"]
+    doc = """Stable PD (SPD) controller.
+
+    A semi-implicit PD controller that computes effort using the next-step
+    predicted state, giving improved stability at high gains compared to the
+    explicit `NewtonPDControlAPI`.
+
+    Control law: `effort = kp*(target_pos - (q + dt*v)) + kd*(target_vel - v)`"""
+)
+{
+    float newton:kp = 0 (
+        doc = """Proportional gain (in joint space).
+
+        Multiplied by position error (target_pos - current_pos) to produce
+        a restoring effort proportional to displacement.
+
+        Range: [0, inf)
+        Units: force / distance or torque / radians"""
+        limits = {
+            dictionary hard = {
+                float minimum = 0
+            }
+        }
+    )
+
+    float newton:kd = 0 (
+        doc = """Derivative gain (in joint space).
+
+        Multiplied by velocity error (target_vel - current_vel) to produce
+        a damping effort proportional to velocity.
+
+        Range: [0, inf)
+        Units: force * seconds / distance or torque * seconds / radians"""
+        limits = {
+            dictionary hard = {
+                float minimum = 0
+            }
+        }
+    )
+
+    int newton:numWorlds = 0 (
+        doc = """Optional number of parallel simulation worlds for batched
+        evaluation.
+
+        0 means infer from the simulation/batch.
+
+        Range: [0, inf)"""
+        limits = {
+            dictionary hard = {
+                int minimum = 0
+            }
+        }
+    )
+}
+
 class NewtonPIDControlAPI "NewtonPIDControlAPI" (
     apiSchemas = ["NewtonActuatorControlBaseAPI"]
     doc = """Stateful PID (Proportional-Integral-Derivative) controller.
