@@ -9,6 +9,13 @@
 - Added `NewtonJointAPI`, which applies on top of a `PhysicsJoint`, providing joint configuration for armature, passive dynamics, and limit spring response
   - All attributes broadcast uniformly to every DOF of the joint.
   - If per-DOF variance is required for a multi-DOF joint, it is recommended to "break apart" the joint into a stack of single-DOF joints (i.e. revolute or prismatic), and set `NewtonArticulationRootAPI.newton:jointsAddMobility = True`.
+# Unreleased
+
+## Features
+
+- Added `NewtonStablePDControlAPI`, a stable PD (SPD) control law that computes effort from the next-step predicted state for improved stability at high gains.
+  - Provides `newton:kp`, `newton:kd`, and an optional `newton:numWorlds` for parallel-world batched evaluation.
+  - Like the other control laws, it must be chosen as the single control law on a `NewtonActuator` (alongside `NewtonPDControlAPI`, `NewtonPIDControlAPI`, and `NewtonNeuralControlAPI`).
 
 # 0.3.1
 
